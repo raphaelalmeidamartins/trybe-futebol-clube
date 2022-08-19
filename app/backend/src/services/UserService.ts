@@ -36,7 +36,7 @@ class UserService {
       return user;
     },
     password: async (user: IUser, password: string): Promise<void> => {
-      if (bcrypt.compareSync(user.password, password)) {
+      if (!bcrypt.compareSync(password, user.password)) {
         throw new UnauthorizedError(INVALID_FIELDS_MSG);
       }
     },
