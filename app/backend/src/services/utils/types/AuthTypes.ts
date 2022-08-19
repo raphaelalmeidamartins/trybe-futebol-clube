@@ -11,7 +11,7 @@ interface IAuthBody {
 
 interface IAuthService {
   generate(id: number): Promise<string>;
-  validate(authorization: string): Promise<ITokenPayload>;
+  validate(authorization: string | undefined): Promise<ITokenPayload>;
 }
 
 export default IAuthService;

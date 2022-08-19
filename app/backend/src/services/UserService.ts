@@ -1,6 +1,7 @@
 import * as bcrypt from 'bcryptjs';
 import * as Joi from 'joi';
 import UserRepository, { IUser } from '../database/models/User';
+import NotFoundError from '../utils/errors/NotFoundError';
 import UnauthorizedError from '../utils/errors/UnauthorizedError';
 import IAuthService, { IAuthBody } from './utils/types/AuthTypes';
 import validator from './utils/validator';
@@ -9,9 +10,7 @@ const REQUIRED_MSG = 'All fields must be filled';
 const INVALID_FIELDS_MSG = 'Incorrect email or password';
 
 class UserService {
-  constructor(private tokenService: IAuthService) {
-    this.tokenService = tokenService;
-  }
+  constructor(private _tokenService: IAuthService) {}
 
   public validate = {
     body: {
@@ -30,7 +29,9 @@ class UserService {
       ),
     },
     username: async (email: string): Promise<IUser> => {
-      const user: IUser | null = await UserRepository.findOne({ where: { email } });
+      const user: IUser | null = await UserRepository.findOne({
+        where: { email },
+      });
       if (!user) throw new UnauthorizedError(INVALID_FIELDS_MSG);
       return user;
     },
@@ -45,9 +46,16 @@ class UserService {
     await this.validate.body.login(data);
     const user = await this.validate.username(data.email);
     await this.validate.password(user, data.password);
-    const token = await this.tokenService.generate(user.id);
+    const token = await this._tokenService.generate(user.id);
 
     return token;
+  }
+
+  public async getRole(authorization: string | undefined): Promise<string> {
+    const { id } = await this._tokenService.validate(authorization);
+    const user = await UserRepository.findByPk(id);
+    if (!user) throw new NotFoundError('User not found');
+    return user.role;
   }
 }
 
