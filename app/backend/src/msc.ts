@@ -9,3 +9,4 @@ const userService = new UserService(authService);
 const userController = new UserController(userService);
 
 export default userController;
+export { authService, userService };
