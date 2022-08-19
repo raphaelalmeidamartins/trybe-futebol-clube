@@ -11,6 +11,7 @@ import { app } from '../app';
 import { IAuthBody } from '../services/utils/types/AuthTypes';
 import UserRepository, { IUser } from '../database/models/User';
 import { StatusCodes } from 'http-status-codes';
+import { authService } from '../msc';
 
 chai.use(chaiHttp);
 
@@ -18,25 +19,31 @@ const { expect } = chai;
 
 const mockToken: string = 'mock-token'
 
-const badLoginPasswordMock: IAuthBody = {
-  email: 'rapha@admin.com',
-  password: 'secret_rapha'
-};
+const badLoginPasswordMock: IAuthBody[] = [
+  {
+    email: 'rapha@admin.com',
+    password: 'secret_rapha'
+  },
+  {
+    email: 'rapha@admin.com',
+    password: ''
+  },
+];
 
-const badLoginEmailMock: IAuthBody = {
-  email: 'rapha@user.com',
-  password: 'raphapassword'
-};
-
-const invalidLoginPasswordMock: IAuthBody = {
-  email: 'rapha@admin.com',
-  password: ''
-}
-
-const invalidLoginEmailMock: IAuthBody = {
-  email: 'rapha@admin',
-  password: 'secret_rapha'
-}
+const badLoginEmailMock: IAuthBody[] = [
+  {
+    email: 'rapha@user.com',
+    password: 'raphapassword'
+  },
+  {
+    email: 'rapha@admin',
+    password: 'secret_rapha'
+  },
+  {
+    email: '',
+    password: 'secret_rapha'
+  },
+];
 
 const validLoginMock: IAuthBody = {
   email: 'rapha@admin.com',
@@ -51,7 +58,7 @@ const userMock: IUser = {
   role: 'admin'
 }
 
-describe('Check "/login" routes', () => {
+describe('Check /login routes', () => {
   describe('POST', () => {
     afterEach(() => sinon.restore());
 
@@ -72,7 +79,7 @@ describe('Check "/login" routes', () => {
 
       const response = await chai
         .request(app)
-        .post('/login').send(badLoginPasswordMock);
+        .post('/login').send(badLoginPasswordMock[0]);
   
       expect(response.status).to.be.eq(StatusCodes.UNAUTHORIZED);
       expect(response.body.message).to.be.eq('Incorrect email or password');
@@ -83,7 +90,7 @@ describe('Check "/login" routes', () => {
 
       const response = await chai
         .request(app)
-        .post('/login').send(badLoginEmailMock);
+        .post('/login').send(badLoginEmailMock[0]);
   
       expect(response.status).to.be.eq(StatusCodes.UNAUTHORIZED);
       expect(response.body.message).to.be.eq('Incorrect email or password');
@@ -94,7 +101,7 @@ describe('Check "/login" routes', () => {
 
       const response = await chai
         .request(app)
-        .post('/login').send(invalidLoginEmailMock);
+        .post('/login').send(badLoginEmailMock[1]);
   
       expect(response.status).to.be.eq(StatusCodes.UNPROCESSABLE_ENTITY);
       expect(response.body.message).to.be.eq('Incorrect email or password');
@@ -105,32 +112,77 @@ describe('Check "/login" routes', () => {
 
       const response = await chai
         .request(app)
-        .post('/login').send(invalidLoginEmailMock);
+        .post('/login').send(badLoginEmailMock[2]);
   
       expect(response.status).to.be.eq(StatusCodes.BAD_REQUEST);
       expect(response.body.message).to.be.eq('All fields must be filled');
     });
 
-    it('should return an error message if the password has an invalid format', async () => {
+    it('should return an error message if the password has an invalid format or empty', async () => {
       sinon.stub(UserRepository, 'findOne').resolves(null);
 
       const response = await chai
         .request(app)
-        .post('/login').send(invalidLoginPasswordMock);
+        .post('/login').send(badLoginPasswordMock[1]);
   
       expect(response.status).to.be.eq(StatusCodes.BAD_REQUEST);
       expect(response.body.message).to.be.eq('All fields must be filled');
     });
+  });
 
-    it('should return an error message if the password is empty', async () => {
-      sinon.stub(UserRepository, 'findOne').resolves(null);
+  describe('GET /validate', () => {
+    afterEach(() => sinon.restore());
+
+    it('should return the role of the user according to the request.headers.authorization', async () => {
+      sinon.stub(UserRepository, 'findOne').resolves(userMock as UserRepository);
+
+      const { body: { token } } = await chai
+        .request(app)
+        .post('/login').send(validLoginMock);
 
       const response = await chai
         .request(app)
-        .post('/login').send(invalidLoginPasswordMock);
+        .get('/login/validate')
+        .set('authorization', token);
   
-      expect(response.status).to.be.eq(StatusCodes.BAD_REQUEST);
-      expect(response.body.message).to.be.eq('All fields must be filled');
+      expect(response.status).to.be.eq(StatusCodes.OK);
+      expect(response.body.role).to.be.eq(userMock.role);
+    });
+
+    it('should return the an error if the request.headers.authorization is invalid', async () => {
+      sinon.stub(UserRepository, 'findOne').resolves(userMock as UserRepository);
+
+      const response = await chai
+        .request(app)
+        .get('/login/validate')
+        .set('authorization', 'anything');
+  
+      expect(response.status).to.be.eq(StatusCodes.UNAUTHORIZED);
+      expect(response.body.message).to.be.eq('Invalid token');
+    });
+
+    it('should return the an error if there is no request.headers.authorization', async () => {
+      sinon.stub(UserRepository, 'findOne').resolves(userMock as UserRepository);
+
+      const response = await chai
+        .request(app)
+        .get('/login/validate');
+  
+      expect(response.status).to.be.eq(StatusCodes.UNAUTHORIZED);
+      expect(response.body.message).to.be.eq('Token not found');
+    });
+
+    it('should return the an error if there is no user with the corresponding request.headers.authorization', async () => {
+      sinon.stub(UserRepository, 'findByPk').resolves(null);
+      sinon.stub(authService, 'validate').resolves({ id: 9999 });
+
+      const response = await chai
+        .request(app)
+        .get('/login/validate')
+        .set('authorization', 'anything');
+  
+      expect(response.status).to.be.eq(StatusCodes.UNAUTHORIZED);
+      expect(response.body.message).to.be.eq('User not found');
     });
   });
 });
