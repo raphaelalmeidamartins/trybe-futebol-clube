@@ -10,7 +10,6 @@ function validationErrorMiddleware(
   next: NextFunction,
 ): void {
   const [{ type }] = err.details;
-  console.log(type);
   switch (true) {
     case type.includes('required') || type.includes('empty'):
       res.status(StatusCodes.BAD_REQUEST).json({ message: err.message });
