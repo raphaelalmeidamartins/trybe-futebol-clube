@@ -1,7 +1,6 @@
 import * as bcrypt from 'bcryptjs';
 import * as Joi from 'joi';
 import UserRepository, { IUser } from '../database/models/User';
-import NotFoundError from '../utils/errors/NotFoundError';
 import UnauthorizedError from '../utils/errors/UnauthorizedError';
 import IAuthService, { IAuthBody } from './utils/types/AuthTypes';
 import validator from './utils/validator';
@@ -54,7 +53,7 @@ class UserService {
   public async getRole(authorization: string | undefined): Promise<string> {
     const { id } = await this._tokenService.validate(authorization);
     const user = await UserRepository.findByPk(id);
-    if (!user) throw new NotFoundError('User not found');
+    if (!user) throw new UnauthorizedError('User not found');
     return user.role;
   }
 }
