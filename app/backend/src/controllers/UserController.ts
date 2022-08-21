@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import UserService from '../services/UserService';
 
-class UserController {
+class UserController implements UserController {
   constructor(private _service: UserService) {
     this.login = this.login.bind(this);
     this.getRole = this.getRole.bind(this);
@@ -18,6 +18,18 @@ class UserController {
     const role = await this._service.getRole(req.headers.authorization);
 
     res.status(StatusCodes.OK).json({ role });
+  }
+
+  public async list(_req: Request, res: Response): Promise<void> {
+    const users = await this._service.list();
+
+    res.status(StatusCodes.OK).json(users);
+  }
+
+  public async getByPk(req: Request, res: Response): Promise<void> {
+    const user = await this._service.getByPk(+req.params.id);
+
+    res.status(StatusCodes.OK).json(user);
   }
 }
 
