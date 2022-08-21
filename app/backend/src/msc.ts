@@ -13,10 +13,10 @@ const userController = new UserController(userService);
 const teamService = new TeamService();
 const teamController = new TeamController(teamService);
 
-export default userController;
 export {
   authService,
   userService,
+  userController,
   teamService,
   teamController,
 };
