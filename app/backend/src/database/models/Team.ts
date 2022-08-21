@@ -8,12 +8,12 @@ interface ITeam {
 
 type ITeamCreation = Omit<ITeam, 'id'>;
 
-class TeamRepository extends Sequelize.Model<ITeam, ITeamCreation> {
+class Team extends Sequelize.Model<ITeam, ITeamCreation> {
   declare id: number;
   declare teamName: string;
 }
 
-TeamRepository.init({
+Team.init({
   id: {
     type: Sequelize.INTEGER,
     allowNull: false,
@@ -28,5 +28,5 @@ TeamRepository.init({
   underscored: true,
 });
 
-export default TeamRepository;
+export default Team;
 export { ITeam, ITeamCreation };

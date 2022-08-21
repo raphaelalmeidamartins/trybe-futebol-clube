@@ -13,7 +13,7 @@ type IUserCreation = Omit<IUser, 'id'>;
 
 type IUserReturned = Omit<IUser, 'password'>;
 
-class UserRepository extends Sequelize.Model<IUser, IUserCreation> {
+class User extends Sequelize.Model<IUser, IUserCreation> {
   declare id: number;
   declare username: string;
   declare role: string;
@@ -21,7 +21,7 @@ class UserRepository extends Sequelize.Model<IUser, IUserCreation> {
   declare password: string;
 }
 
-UserRepository.init({
+User.init({
   id: {
     type: Sequelize.INTEGER,
     allowNull: false,
@@ -39,5 +39,5 @@ UserRepository.init({
   underscored: true,
 });
 
-export default UserRepository;
+export default User;
 export { IUser, IUserCreation, IUserReturned };
