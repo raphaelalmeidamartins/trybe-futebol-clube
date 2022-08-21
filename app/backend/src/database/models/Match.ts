@@ -33,7 +33,7 @@ Match.init({
   homeTeamGoals: Sequelize.INTEGER,
   awayTeam: Sequelize.INTEGER,
   awayTeamGoals: Sequelize.INTEGER,
-  inProgress: Sequelize.INTEGER,
+  inProgress: Sequelize.BOOLEAN,
 }, {
   sequelize: db,
   tableName: 'matches',
