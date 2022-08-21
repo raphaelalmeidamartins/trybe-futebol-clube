@@ -6,8 +6,6 @@ import * as sinon from 'sinon';
 import chaiHttp = require('chai-http');
 
 import { app } from '../app';
-
-// import { Response } from 'superagent';
 import { IAuthBody } from '../services/utils/types/AuthTypes';
 import UserRepository, { IUser } from '../database/models/User';
 import { StatusCodes } from 'http-status-codes';
