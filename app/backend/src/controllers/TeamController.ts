@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import TeamService from '../services/TeamService';
+import IController from './utils/types/ControllerTypes';
 
-class TeamController {
+class TeamController implements IController {
   constructor(private _service: TeamService) {
     this.list = this.list.bind(this);
     this.getByPk = this.getByPk.bind(this);
