@@ -1,14 +1,16 @@
 import * as bcrypt from 'bcryptjs';
 import * as Joi from 'joi';
-import UserRepository, { IUser } from '../database/models/User';
+import UserRepository, { IUser, IUserReturned } from '../database/models/User';
+import NotFoundError from '../utils/errors/NotFoundError';
 import UnauthorizedError from '../utils/errors/UnauthorizedError';
 import IAuthService, { IAuthBody } from './utils/types/AuthTypes';
+import { IUserService, IValidatorFunction } from './utils/types/ServiceTypes';
 import validator from './utils/validator';
 
 const REQUIRED_MSG = 'All fields must be filled';
 const INVALID_FIELDS_MSG = 'Incorrect email or password';
 
-class UserService {
+class UserService implements IUserService {
   private _model = UserRepository;
 
   constructor(private _tokenService: IAuthService) {}
@@ -27,7 +29,7 @@ class UserService {
             'any.required': REQUIRED_MSG,
           }),
         }),
-      ),
+      ) as IValidatorFunction<IAuthBody>,
     },
     username: async (email: string): Promise<IUser> => {
       const user: IUser | null = await this._model.findOne({
@@ -48,7 +50,6 @@ class UserService {
     const user = await this.validate.username(data.email);
     await this.validate.password(user, data.password);
     const token = await this._tokenService.generate(user.id);
-
     return token;
   }
 
@@ -57,6 +58,17 @@ class UserService {
     const user = await this._model.findByPk(id);
     if (!user) throw new UnauthorizedError('User not found');
     return user.role;
+  }
+
+  public async list(): Promise<IUserReturned[]> {
+    const users = await this._model.findAll({ attributes: { exclude: ['password'] } });
+    return users;
+  }
+
+  public async getByPk(pk: number): Promise<IUserReturned> {
+    const user = await this._model.findByPk(pk, { attributes: { exclude: ['password'] } });
+    if (!user) throw new NotFoundError('User not found');
+    return user;
   }
 }
 

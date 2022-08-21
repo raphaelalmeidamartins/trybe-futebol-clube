@@ -11,6 +11,8 @@ interface IUser {
 
 type IUserCreation = Omit<IUser, 'id'>;
 
+type IUserReturned = Omit<IUser, 'password'>;
+
 class UserRepository extends Sequelize.Model<IUser, IUserCreation> {
   declare id: number;
   declare username: string;
@@ -38,4 +40,4 @@ UserRepository.init({
 });
 
 export default UserRepository;
-export { IUser, IUserCreation };
+export { IUser, IUserCreation, IUserReturned };

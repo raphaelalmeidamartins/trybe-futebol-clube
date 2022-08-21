@@ -1,7 +1,8 @@
 import NotFoundError from '../utils/errors/NotFoundError';
 import TeamRepository, { ITeam } from '../database/models/Team';
+import IService from './utils/types/ServiceTypes';
 
-class TeamService {
+class TeamService implements IService<ITeam, number> {
   private _model = TeamRepository;
 
   public async list(): Promise<ITeam[]> {
