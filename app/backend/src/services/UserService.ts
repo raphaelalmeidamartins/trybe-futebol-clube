@@ -9,11 +9,9 @@ const REQUIRED_MSG = 'All fields must be filled';
 const INVALID_FIELDS_MSG = 'Incorrect email or password';
 
 class UserService {
-  private _model;
+  private _model = UserRepository;
 
-  constructor(private _tokenService: IAuthService) {
-    this._model = UserRepository;
-  }
+  constructor(private _tokenService: IAuthService) {}
 
   public validate = {
     body: {

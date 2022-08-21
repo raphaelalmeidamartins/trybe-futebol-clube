@@ -2,10 +2,7 @@ import NotFoundError from '../utils/errors/NotFoundError';
 import TeamRepository, { ITeam } from '../database/models/Team';
 
 class TeamService {
-  private _model;
-  constructor() {
-    this._model = TeamRepository;
-  }
+  private _model = TeamRepository;
 
   public async list(): Promise<ITeam[]> {
     const teams = await this._model.findAll();
