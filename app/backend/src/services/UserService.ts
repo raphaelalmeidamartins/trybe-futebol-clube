@@ -9,7 +9,11 @@ const REQUIRED_MSG = 'All fields must be filled';
 const INVALID_FIELDS_MSG = 'Incorrect email or password';
 
 class UserService {
-  constructor(private _tokenService: IAuthService) {}
+  private _model;
+
+  constructor(private _tokenService: IAuthService) {
+    this._model = UserRepository;
+  }
 
   public validate = {
     body: {
@@ -28,7 +32,7 @@ class UserService {
       ),
     },
     username: async (email: string): Promise<IUser> => {
-      const user: IUser | null = await UserRepository.findOne({
+      const user: IUser | null = await this._model.findOne({
         where: { email },
       });
       if (!user) throw new UnauthorizedError(INVALID_FIELDS_MSG);
@@ -52,7 +56,7 @@ class UserService {
 
   public async getRole(authorization: string | undefined): Promise<string> {
     const { id } = await this._tokenService.validate(authorization);
-    const user = await UserRepository.findByPk(id);
+    const user = await this._model.findByPk(id);
     if (!user) throw new UnauthorizedError('User not found');
     return user.role;
   }
