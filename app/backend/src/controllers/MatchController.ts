@@ -11,6 +11,7 @@ class MatchController implements IController {
     this.register = this.register.bind(this);
     this.update = this.update.bind(this);
     this.finish = this.finish.bind(this);
+    this.getLeaderBoard = this.getLeaderBoard.bind(this);
   }
 
   public async list(req: Request, res: Response): Promise<void> {
@@ -49,6 +50,14 @@ class MatchController implements IController {
     await this._service.finish(req.headers.authorization, +req.params.id);
 
     res.status(StatusCodes.OK).json({ message: 'Finished' });
+  }
+
+  public async getLeaderBoard(_req: Request, res: Response): Promise<void> {
+    const leaderboard = await this._service.getLeaderBoard();
+
+    console.log(leaderboard);
+
+    res.status(StatusCodes.OK).json(leaderboard);
   }
 }
 

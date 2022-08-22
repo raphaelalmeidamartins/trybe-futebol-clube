@@ -1,4 +1,5 @@
 import * as express from 'express';
+import leaderboardRoutes from './routes/leaderboardRoutes';
 import loginRoutes from './routes/loginRoutes';
 import matchRoutes from './routes/matchRoutes';
 import teamRoutes from './routes/teamRoutes';
@@ -34,6 +35,7 @@ class App {
     this.app.use('/users', userRoutes);
     this.app.use('/teams', teamRoutes);
     this.app.use('/matches', matchRoutes);
+    this.app.use('/leaderboard', leaderboardRoutes);
 
     this.app.use(authErrorMiddleware);
     this.app.use(validationErrorMiddleware);
