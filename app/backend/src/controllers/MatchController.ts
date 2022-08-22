@@ -9,6 +9,7 @@ class MatchController implements IController {
     this.list = this.list.bind(this);
     this.getByPk = this.getByPk.bind(this);
     this.register = this.register.bind(this);
+    this.update = this.update.bind(this);
     this.finish = this.finish.bind(this);
   }
 
@@ -36,6 +37,12 @@ class MatchController implements IController {
     const match = await this._service.register(req.headers.authorization, req.body);
 
     res.status(StatusCodes.CREATED).json(match);
+  }
+
+  public async update(req: Request, res: Response): Promise<void> {
+    await this._service.update(req.body, +req.params.id);
+
+    res.status(StatusCodes.OK).json({ message: 'Updated' });
   }
 
   public async finish(req: Request, res: Response): Promise<void> {

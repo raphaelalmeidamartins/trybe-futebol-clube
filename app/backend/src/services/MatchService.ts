@@ -1,5 +1,5 @@
 import * as Joi from 'joi';
-import Match, { IMatch, IMatchCreation } from '../database/models/Match';
+import Match, { IMatch, IMatchCreation, IMatchUpdate } from '../database/models/Match';
 import Team from '../database/models/Team';
 import BadRequestError from '../utils/errors/BadRequestError';
 import NotFoundError from '../utils/errors/NotFoundError';
@@ -39,6 +39,12 @@ class MatchService implements IMatchService {
           inProgress: Joi.boolean().optional(),
         }),
       ) as IValidatorFunction<IMatchCreation>,
+      update: validator(
+        Joi.object({
+          homeTeamGoals: Joi.number().positive().required(),
+          awayTeamGoals: Joi.number().positive().required(),
+        }),
+      ) as IValidatorFunction<IMatchUpdate>,
     },
     async team(pk: number): Promise<void> {
       const team = await Team.findByPk(pk);
@@ -92,6 +98,11 @@ class MatchService implements IMatchService {
       inProgress: true,
     });
     return match;
+  }
+
+  public async update(data: IMatchUpdate, id: number): Promise<void> {
+    this.validate.body.update(data);
+    await this._model.update(data, { where: { id } });
   }
 
   public async finish(
