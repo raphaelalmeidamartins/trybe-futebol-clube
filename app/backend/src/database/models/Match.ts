@@ -8,7 +8,7 @@ interface IMatch {
   homeTeamGoals: number,
   awayTeam: number,
   awayTeamGoals: number,
-  inProgress: boolean,
+  inProgress?: boolean,
 }
 
 type IMatchCreation = Omit<IMatch, 'id'>;

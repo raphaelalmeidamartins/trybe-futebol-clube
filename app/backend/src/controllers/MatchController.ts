@@ -8,6 +8,8 @@ class MatchController implements IController {
   constructor(private _service: MatchService) {
     this.list = this.list.bind(this);
     this.getByPk = this.getByPk.bind(this);
+    this.register = this.register.bind(this);
+    this.finish = this.finish.bind(this);
   }
 
   public async list(req: Request, res: Response): Promise<void> {
@@ -28,6 +30,18 @@ class MatchController implements IController {
     const match = await this._service.getByPk(+req.params.id);
 
     res.status(StatusCodes.OK).json(match);
+  }
+
+  public async register(req: Request, res: Response): Promise<void> {
+    const match = await this._service.register(req.headers.authorization, req.body);
+
+    res.status(StatusCodes.CREATED).json(match);
+  }
+
+  public async finish(req: Request, res: Response): Promise<void> {
+    await this._service.finish(req.headers.authorization, +req.params.id);
+
+    res.status(StatusCodes.OK).json({ message: 'Finished' });
   }
 }
 

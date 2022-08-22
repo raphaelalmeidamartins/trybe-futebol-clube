@@ -15,7 +15,7 @@ const userController = new UserController(userService);
 const teamService = new TeamService();
 const teamController = new TeamController(teamService);
 
-const matchService = new MatchService();
+const matchService = new MatchService(authService);
 const matchController = new MatchController(matchService);
 
 export {

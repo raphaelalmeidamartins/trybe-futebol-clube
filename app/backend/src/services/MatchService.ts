@@ -1,8 +1,12 @@
-import Match, { IMatch } from '../database/models/Match';
+import * as Joi from 'joi';
+import Match, { IMatch, IMatchCreation } from '../database/models/Match';
 import Team from '../database/models/Team';
 import BadRequestError from '../utils/errors/BadRequestError';
 import NotFoundError from '../utils/errors/NotFoundError';
-import { IMatchService } from './utils/types/ServiceTypes';
+import UnauthorizedError from '../utils/errors/UnauthorizedError';
+import IAuthService from './utils/types/AuthTypes';
+import { IMatchService, IValidatorFunction } from './utils/types/ServiceTypes';
+import validator from './utils/validator';
 
 const INCLUDE_OPTIONS = {
   include: [
@@ -22,6 +26,26 @@ const INCLUDE_OPTIONS = {
 class MatchService implements IMatchService {
   private _model = Match;
 
+  constructor(private _tokenService: IAuthService) {}
+
+  public validate = {
+    body: {
+      register: validator(
+        Joi.object({
+          homeTeam: Joi.number().positive().required(),
+          awayTeam: Joi.number().positive().required(),
+          homeTeamGoals: Joi.number().positive().required(),
+          awayTeamGoals: Joi.number().positive().required(),
+          inProgress: Joi.boolean().optional(),
+        }),
+      ) as IValidatorFunction<IMatchCreation>,
+    },
+    async team(pk: number): Promise<void> {
+      const team = await Team.findByPk(pk);
+      if (!team) throw new NotFoundError('There is no team with such id!');
+    },
+  };
+
   public async list(): Promise<IMatch[]> {
     const matches = await this._model.findAll({ ...INCLUDE_OPTIONS });
     return matches;
@@ -34,7 +58,10 @@ class MatchService implements IMatchService {
     }
     inProgress = query === 'true';
 
-    const matches = await this._model.findAll({ ...INCLUDE_OPTIONS, where: { inProgress } });
+    const matches = await this._model.findAll({
+      ...INCLUDE_OPTIONS,
+      where: { inProgress },
+    });
     return matches;
   }
 
@@ -42,6 +69,37 @@ class MatchService implements IMatchService {
     const match = await this._model.findByPk(pk, { ...INCLUDE_OPTIONS });
     if (!match) throw new NotFoundError('Match not found');
     return match;
+  }
+
+  public async register(
+    authorization: string | undefined,
+    data: IMatchCreation,
+  ): Promise<IMatch> {
+    await this._tokenService.validate(authorization);
+    this.validate.body.register(data);
+
+    if (data.homeTeam === data.awayTeam) {
+      throw new UnauthorizedError(
+        'It is not possible to create a match with two equal teams',
+      );
+    }
+
+    await this.validate.team(data.homeTeam);
+    await this.validate.team(data.awayTeam);
+
+    const match = await this._model.create({
+      ...data,
+      inProgress: true,
+    });
+    return match;
+  }
+
+  public async finish(
+    authorization: string | undefined,
+    id: number,
+  ): Promise<void> {
+    await this._tokenService.validate(authorization);
+    await this._model.update({ inProgress: false }, { where: { id } });
   }
 }
 
