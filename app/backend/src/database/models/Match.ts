@@ -8,10 +8,25 @@ interface IMatch {
   homeTeamGoals: number,
   awayTeam: number,
   awayTeamGoals: number,
-  inProgress: number,
+  inProgress: boolean,
 }
 
 type IMatchCreation = Omit<IMatch, 'id'>;
+
+interface IMatchReturned {
+  id: number;
+  homeTeam: number;
+  homeTeamGoals: number,
+  awayTeam: number,
+  awayTeamGoals: number,
+  inProgress: boolean,
+  teamHome: {
+    teamName: string,
+  };
+  teamAway: {
+    teamName: string,
+  };
+}
 
 class Match extends Sequelize.Model<IMatch, IMatchCreation> {
   declare id: number;
@@ -19,7 +34,7 @@ class Match extends Sequelize.Model<IMatch, IMatchCreation> {
   declare homeTeamGoals: number;
   declare awayTeam: number;
   declare awayTeamGoals: number;
-  declare inProgress: number;
+  declare inProgress: boolean;
 }
 
 Match.init({
@@ -41,9 +56,9 @@ Match.init({
   underscored: true,
 });
 
-Match.belongsTo(Team, { foreignKey: 'homeTeam' });
-Match.belongsTo(Team, { foreignKey: 'awayTeam' });
+Match.belongsTo(Team, { foreignKey: 'homeTeam', as: 'teamHome' });
+Match.belongsTo(Team, { foreignKey: 'awayTeam', as: 'teamAway' });
 Team.hasMany(Match, { foreignKey: 'id', as: 'matches' });
 
 export default Match;
-export { IMatch, IMatchCreation };
+export { IMatch, IMatchCreation, IMatchReturned };

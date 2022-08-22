@@ -1,3 +1,4 @@
+import { IMatch } from '../../../database/models/Match';
 import { IUser, IUserReturned } from '../../../database/models/User';
 import { IAuthBody } from './AuthTypes';
 
@@ -20,5 +21,9 @@ interface IUserService extends IService<IUserReturned, number> {
   getRole(authorization: string | undefined): Promise<string>;
 }
 
+interface IMatchService extends IService<IMatch, number> {
+  listByProgress(param: string): Promise<IMatch[]>;
+}
+
 export default IService;
-export { IValidatorFunction, IUserService };
+export { IValidatorFunction, IUserService, IMatchService };
