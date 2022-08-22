@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcryptjs';
 import * as Joi from 'joi';
-import User, { IUser, IUserReturned } from '../database/models/User';
+import UserRepository, { IUser, IUserReturned } from '../database/models/User';
 import NotFoundError from '../utils/errors/NotFoundError';
 import UnauthorizedError from '../utils/errors/UnauthorizedError';
 import IAuthService, { IAuthBody } from './utils/types/AuthTypes';
@@ -11,7 +11,7 @@ const REQUIRED_MSG = 'All fields must be filled';
 const INVALID_FIELDS_MSG = 'Incorrect email or password';
 
 class UserService implements IUserService {
-  private _model = User;
+  private _model = UserRepository;
 
   constructor(private _tokenService: IAuthService) {}
 
