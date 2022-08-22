@@ -23,7 +23,7 @@ export default function authErrorMiddleware(
   const { name } = err;
   switch (true) {
     case ['TokenExpiredError', 'JsonWebTokenError', 'NotBeforeError'].includes(name):
-      res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Invalid token' });
+      res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Token must be a valid token' });
       break;
     default: next(err); break;
   }
