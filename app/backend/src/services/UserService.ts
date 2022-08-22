@@ -46,7 +46,7 @@ class UserService implements IUserService {
   };
 
   public async login(data: IAuthBody): Promise<string> {
-    await this.validate.body.login(data);
+    this.validate.body.login(data);
     const user = await this.validate.username(data.email);
     await this.validate.password(user, data.password);
     const token = await this._tokenService.generate(user.id);
