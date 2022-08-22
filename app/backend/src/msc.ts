@@ -3,6 +3,7 @@ import MatchController from './controllers/MatchController';
 import TeamController from './controllers/TeamController';
 import UserController from './controllers/UserController';
 import AuthService from './services/AuthService';
+import LeaderboardService from './services/LeaderboardService';
 import MatchService from './services/MatchService';
 import TeamService from './services/TeamService';
 import UserService from './services/UserService';
@@ -16,7 +17,8 @@ const teamService = new TeamService();
 const teamController = new TeamController(teamService);
 
 const matchService = new MatchService(authService);
-const matchController = new MatchController(matchService);
+const leaderboardService = new LeaderboardService(matchService);
+const matchController = new MatchController(matchService, leaderboardService);
 
 export {
   authService,
@@ -25,5 +27,6 @@ export {
   teamService,
   teamController,
   matchService,
+  leaderboardService,
   matchController,
 };

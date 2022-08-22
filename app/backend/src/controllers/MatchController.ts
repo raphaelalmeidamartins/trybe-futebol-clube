@@ -1,17 +1,23 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import LeaderboardService from '../services/LeaderboardService';
 import { IMatch } from '../database/models/Match';
 import MatchService from '../services/MatchService';
 import IController from './utils/types/ControllerTypes';
 
 class MatchController implements IController {
-  constructor(private _service: MatchService) {
+  constructor(
+    private _service: MatchService,
+    private _leaderboardService: LeaderboardService,
+  ) {
     this.list = this.list.bind(this);
     this.getByPk = this.getByPk.bind(this);
     this.register = this.register.bind(this);
     this.update = this.update.bind(this);
     this.finish = this.finish.bind(this);
-    this.getLeaderBoard = this.getLeaderBoard.bind(this);
+    this.getLeaderBoardGeneral = this.getLeaderBoardGeneral.bind(this);
+    this.getLeaderBoardHome = this.getLeaderBoardHome.bind(this);
+    this.getLeaderBoardAway = this.getLeaderBoardAway.bind(this);
   }
 
   public async list(req: Request, res: Response): Promise<void> {
@@ -35,7 +41,10 @@ class MatchController implements IController {
   }
 
   public async register(req: Request, res: Response): Promise<void> {
-    const match = await this._service.register(req.headers.authorization, req.body);
+    const match = await this._service.register(
+      req.headers.authorization,
+      req.body,
+    );
 
     res.status(StatusCodes.CREATED).json(match);
   }
@@ -52,10 +61,20 @@ class MatchController implements IController {
     res.status(StatusCodes.OK).json({ message: 'Finished' });
   }
 
-  public async getLeaderBoard(_req: Request, res: Response): Promise<void> {
-    const leaderboard = await this._service.getLeaderBoard();
+  public async getLeaderBoardGeneral(_req: Request, res: Response): Promise<void> {
+    const leaderboard = await this._leaderboardService.getLeaderBoard('general');
 
-    console.log(leaderboard);
+    res.status(StatusCodes.OK).json(leaderboard);
+  }
+
+  public async getLeaderBoardHome(_req: Request, res: Response): Promise<void> {
+    const leaderboard = await this._leaderboardService.getLeaderBoard('home');
+
+    res.status(StatusCodes.OK).json(leaderboard);
+  }
+
+  public async getLeaderBoardAway(_req: Request, res: Response): Promise<void> {
+    const leaderboard = await this._leaderboardService.getLeaderBoard('away');
 
     res.status(StatusCodes.OK).json(leaderboard);
   }
