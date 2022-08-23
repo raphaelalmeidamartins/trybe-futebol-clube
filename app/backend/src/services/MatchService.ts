@@ -121,6 +121,7 @@ class MatchService implements IMatchService {
     id: number,
   ): Promise<void> {
     await this._tokenService.validate(authorization);
+    await this.getByPk(id);
     await this._model.update({ inProgress: false }, { where: { id } });
   }
 }
