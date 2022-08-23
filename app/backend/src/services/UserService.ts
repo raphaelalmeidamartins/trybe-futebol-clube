@@ -60,12 +60,20 @@ class UserService implements IUserService {
     return user.role;
   }
 
-  public async list(): Promise<IUserReturned[]> {
+  public async list(authorization: string | undefined): Promise<IUserReturned[]> {
+    const role = await this.getRole(authorization);
+    if (role !== 'admin') {
+      throw new UnauthorizedError('Only admin users can access this route');
+    }
     const users = await this._model.findAll({ attributes: { exclude: ['password'] } });
     return users;
   }
 
-  public async getByPk(pk: number): Promise<IUserReturned> {
+  public async getByPk(pk: number, authorization: string | undefined): Promise<IUserReturned> {
+    const role = await this.getRole(authorization);
+    if (role !== 'admin') {
+      throw new UnauthorizedError('Only admin users can access this route');
+    }
     const user = await this._model.findByPk(pk, { attributes: { exclude: ['password'] } });
     if (!user) throw new NotFoundError('User not found');
     return user;

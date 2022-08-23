@@ -3,8 +3,8 @@ import { IUser, IUserReturned } from '../../../database/models/User';
 import { IAuthBody } from './AuthTypes';
 
 interface IService<Entity, Pk> {
-  list(): Promise<Entity[]>;
-  getByPk(pk: Pk): Promise<Entity>;
+  list(authorization?: string | undefined): Promise<Entity[]>;
+  getByPk(pk: Pk, authorization?: string | undefined): Promise<Entity>;
 }
 
 type IValidatorFunction<Body> = (data: Body) => Body;
