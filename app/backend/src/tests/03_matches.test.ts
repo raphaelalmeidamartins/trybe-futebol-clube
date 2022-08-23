@@ -9,7 +9,7 @@ import { app } from '../app';
 import Match, { IMatchReturned } from '../database/models/Match';
 import Team from '../database/models/Team';
 import User, { IUser } from '../database/models/User';
-import { validLoginMock } from './mocks/loginMocks';
+import { validLoginMock } from './mocks/loginUserMocks';
 import { matchesMock, matchMock, mockCreationBody, mockCreationBodyInvalidAway, mockCreationBodyInvalidBoth, mockCreationBodyInvalidHome, mockCreationReturn, mockUpdateBody } from './mocks/matchesMocks';
 import { teamMock } from './mocks/teamsMocks';
 
