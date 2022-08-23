@@ -86,6 +86,18 @@ describe('Check /matches routes', () => {
       expect(response.body).to.be.deep.eq(filteredMatches);
     });
 
+    it('should throw a bad request error if the query is invalid', async () => {
+      sinon
+        .stub(Match, 'findAll')
+        .resolves(matchesEmpty as unknown[] as Match[])
+        .withArgs({ ...INCLUDE_OPTIONS });
+
+      const response = await chai.request(app).get('/matches?inProgress=anything');
+
+      expect(response.status).to.be.eq(StatusCodes.BAD_REQUEST);
+      expect(response.body.message).to.be.eq('Invalid query');
+    });
+
     it('should an empty array if there is no registered matches', async () => {
       sinon
         .stub(Match, 'findAll')
@@ -296,6 +308,72 @@ describe('Check /matches routes', () => {
         .patch('/matches/99999')
         .set('authorization', token)
         .send(mockUpdateBody);
+
+      expect(response.status).to.be.eq(StatusCodes.NOT_FOUND);
+      expect(response.body.message).to.be.eq('Match not found');
+    });
+  });
+
+  describe('PATCH /:id/finish', () => {
+    beforeEach(() => sinon.stub(User, 'findOne').resolves(userMock as User));
+    afterEach(() => sinon.restore());
+
+    it('should return the message "Finished" if the update is successful', async () => {
+      sinon
+        .stub(Match, 'update');
+
+      sinon
+        .stub(Match, 'findByPk')
+        .resolves(matchMock as unknown as Match)
+        .withArgs(matchMock.id, { ...INCLUDE_OPTIONS });
+
+      const { body: { token } } = await chai
+        .request(app)
+        .post('/login').send(validLoginMock);
+
+      const response = await chai
+        .request(app)
+        .patch(`/matches/${matchMock.id}/finish`)
+        .set('authorization', token);
+
+      expect(response.status).to.be.eq(StatusCodes.OK);
+      expect(response.body.message).to.be.eq('Finished');
+    });
+
+    it('should return the an error if there is no request.headers.authorization', async () => {
+      sinon
+        .stub(Match, 'update');
+
+      sinon
+        .stub(Match, 'findByPk')
+        .resolves(matchMock as unknown as Match)
+        .withArgs(matchMock.id, { ...INCLUDE_OPTIONS });
+
+      const response = await chai
+        .request(app)
+        .patch(`/matches/${matchMock.id}/finish`);
+
+      expect(response.status).to.be.eq(StatusCodes.UNAUTHORIZED);
+      expect(response.body.message).to.be.eq('Token not found');
+    });
+
+    it('should return the an error if there is no match with the id in the req.params', async () => {
+      sinon
+        .stub(Match, 'update');
+
+      sinon
+        .stub(Match, 'findByPk')
+        .resolves(null as unknown as Match)
+        .withArgs(99999, { ...INCLUDE_OPTIONS });
+
+      const { body: { token } } = await chai
+        .request(app)
+        .post('/login').send(validLoginMock);
+
+      const response = await chai
+        .request(app)
+        .patch('/matches/99999/finish')
+        .set('authorization', token);
 
       expect(response.status).to.be.eq(StatusCodes.NOT_FOUND);
       expect(response.body.message).to.be.eq('Match not found');
