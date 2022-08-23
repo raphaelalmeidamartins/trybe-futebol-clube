@@ -1,67 +1,25 @@
-import * as bcrypt from 'bcryptjs';
 import * as chai from 'chai';
 import * as jwt from 'jsonwebtoken';
 import * as sinon from 'sinon';
 // @ts-ignore
 import chaiHttp = require('chai-http');
 
-import { app } from '../app';
-import { IAuthBody } from '../services/utils/types/AuthTypes';
-import UserRepository, { IUser } from '../database/models/User';
 import { StatusCodes } from 'http-status-codes';
+import { app } from '../app';
+import User from '../database/models/User';
 import { authService } from '../msc';
+import { badLoginEmailMock, badLoginPasswordMock, mockToken, userMock, validLoginMock } from './mocks/loginMocks';
 
 chai.use(chaiHttp);
 
 const { expect } = chai;
-
-const mockToken: string = 'mock-token'
-
-const badLoginPasswordMock: IAuthBody[] = [
-  {
-    email: 'rapha@admin.com',
-    password: 'secret_rapha'
-  },
-  {
-    email: 'rapha@admin.com',
-    password: ''
-  },
-];
-
-const badLoginEmailMock: IAuthBody[] = [
-  {
-    email: 'rapha@user.com',
-    password: 'raphapassword'
-  },
-  {
-    email: 'rapha@admin',
-    password: 'secret_rapha'
-  },
-  {
-    email: '',
-    password: 'secret_rapha'
-  },
-];
-
-const validLoginMock: IAuthBody = {
-  email: 'rapha@admin.com',
-  password: 'raphapassword'
-};
-
-const userMock: IUser = {
-  id: 1,
-  email: 'rapha@admin.com',
-  password: bcrypt.hashSync('raphapassword', 12),
-  username: 'rapha',
-  role: 'admin'
-}
 
 describe('Check /login routes', () => {
   describe('POST', () => {
     afterEach(() => sinon.restore());
 
     it('should return a token if the credentials are valid', async () => {
-      sinon.stub(UserRepository, 'findOne').resolves(userMock as UserRepository);
+      sinon.stub(User, 'findOne').resolves(userMock as User);
       sinon.stub(jwt, 'sign').resolves(mockToken);
 
       const response = await chai
@@ -73,7 +31,7 @@ describe('Check /login routes', () => {
     });
 
     it('should return an error message if the password is invalid', async () => {
-      sinon.stub(UserRepository, 'findOne').resolves(userMock as UserRepository);
+      sinon.stub(User, 'findOne').resolves(userMock as User);
 
       const response = await chai
         .request(app)
@@ -84,7 +42,7 @@ describe('Check /login routes', () => {
     });
 
     it('should return an error message if there is no user with the corresponding email', async () => {
-      sinon.stub(UserRepository, 'findOne').resolves(null);
+      sinon.stub(User, 'findOne').resolves(null);
 
       const response = await chai
         .request(app)
@@ -95,7 +53,7 @@ describe('Check /login routes', () => {
     });
 
     it('should return an error message if the email has an invalid format', async () => {
-      sinon.stub(UserRepository, 'findOne').resolves(null);
+      sinon.stub(User, 'findOne').resolves(null);
 
       const response = await chai
         .request(app)
@@ -106,7 +64,7 @@ describe('Check /login routes', () => {
     });
 
     it('should return an error message if the email is empty', async () => {
-      sinon.stub(UserRepository, 'findOne').resolves(null);
+      sinon.stub(User, 'findOne').resolves(null);
 
       const response = await chai
         .request(app)
@@ -117,7 +75,7 @@ describe('Check /login routes', () => {
     });
 
     it('should return an error message if the password has an invalid format or empty', async () => {
-      sinon.stub(UserRepository, 'findOne').resolves(null);
+      sinon.stub(User, 'findOne').resolves(null);
 
       const response = await chai
         .request(app)
@@ -132,7 +90,7 @@ describe('Check /login routes', () => {
     afterEach(() => sinon.restore());
 
     it('should return the role of the user according to the request.headers.authorization', async () => {
-      sinon.stub(UserRepository, 'findOne').resolves(userMock as UserRepository);
+      sinon.stub(User, 'findOne').resolves(userMock as User);
 
       const { body: { token } } = await chai
         .request(app)
@@ -148,7 +106,7 @@ describe('Check /login routes', () => {
     });
 
     it('should return the an error if the request.headers.authorization is invalid', async () => {
-      sinon.stub(UserRepository, 'findOne').resolves(userMock as UserRepository);
+      sinon.stub(User, 'findOne').resolves(userMock as User);
 
       const response = await chai
         .request(app)
@@ -156,11 +114,11 @@ describe('Check /login routes', () => {
         .set('authorization', 'anything');
   
       expect(response.status).to.be.eq(StatusCodes.UNAUTHORIZED);
-      expect(response.body.message).to.be.eq('Invalid token');
+      expect(response.body.message).to.be.eq('Token must be a valid token');
     });
 
     it('should return the an error if there is no request.headers.authorization', async () => {
-      sinon.stub(UserRepository, 'findOne').resolves(userMock as UserRepository);
+      sinon.stub(User, 'findOne').resolves(userMock as User);
 
       const response = await chai
         .request(app)
@@ -171,7 +129,7 @@ describe('Check /login routes', () => {
     });
 
     it('should return the an error if there is no user with the corresponding request.headers.authorization', async () => {
-      sinon.stub(UserRepository, 'findByPk').resolves(null);
+      sinon.stub(User, 'findByPk').resolves(null);
       sinon.stub(authService, 'validate').resolves({ id: 9999 });
 
       const response = await chai
