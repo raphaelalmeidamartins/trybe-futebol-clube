@@ -50,7 +50,7 @@ class MatchController implements IController {
   }
 
   public async update(req: Request, res: Response): Promise<void> {
-    await this._service.update(req.body, +req.params.id);
+    await this._service.update(req.headers.authorization, req.body, +req.params.id);
 
     res.status(StatusCodes.OK).json({ message: 'Updated' });
   }

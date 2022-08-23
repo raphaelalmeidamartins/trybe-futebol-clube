@@ -105,8 +105,14 @@ class MatchService implements IMatchService {
     return match;
   }
 
-  public async update(data: IMatchUpdate, id: number): Promise<void> {
+  public async update(
+    authorization: string | undefined,
+    data: IMatchUpdate,
+    id: number,
+  ): Promise<void> {
     this.validate.body.update(data);
+    await this._tokenService.validate(authorization);
+    await this.getByPk(id);
     await this._model.update(data, { where: { id } });
   }
 
