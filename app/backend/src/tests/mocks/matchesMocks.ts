@@ -1,7 +1,7 @@
-import { IMatchCreation, IMatchUpdate } from '../../database/models/Match';
+import { IMatchCreation, IMatchReturned, IMatchUpdate } from '../../database/models/Match';
 import { IAuthBody } from '../../services/utils/types/AuthTypes';
 
-export const matchMock = {
+export const matchMock: IMatchReturned = {
   id: 1,
   homeTeam: 16,
   homeTeamGoals: 1,
@@ -16,7 +16,7 @@ export const matchMock = {
   }
 };
 
-export const matchesMock = [
+export const matchesMock: IMatchReturned[] = [
   {
     id: 1,
     homeTeam: 16,
@@ -690,6 +690,10 @@ export const matchesMock = [
     }
   }
 ];
+
+export const matchesEmpty: IMatchReturned[] = [];
+
+export const matchesMockFinished: IMatchReturned[] = matchesMock.filter(({ inProgress }) => !inProgress);
 
 export const createdMatchId = 49;
 
