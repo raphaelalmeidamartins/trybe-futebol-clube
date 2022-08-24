@@ -1,6 +1,6 @@
-import Team, { ITeam } from '../database/models/Team';
+import { ITeam } from '../database/models/Team';
 import ILeaderBoard, { ITeamScore } from './utils/types/LeaderboardTypes';
-import { IMatchService } from './utils/types/ServiceTypes';
+import IService, { IMatchService } from './utils/types/ServiceTypes';
 
 const sortCompareFunction = (prev: ITeamScore, curr: ITeamScore) => {
   let comparison = curr.totalPoints - prev.totalPoints;
@@ -12,9 +12,10 @@ const sortCompareFunction = (prev: ITeamScore, curr: ITeamScore) => {
 };
 
 class LeaderboardService {
-  private _teamModel = Team;
-
-  constructor(private _matchService: IMatchService) {}
+  constructor(
+    private _matchService: IMatchService,
+    private _teamService: IService<ITeam, number>,
+  ) {}
 
   private async getTeamMatchesDataGeneral(teamId: number): Promise<number[]> {
     const [
@@ -171,7 +172,7 @@ class LeaderboardService {
   }
 
   public async getLeaderBoard(filter: string) {
-    const teams = await this._teamModel.findAll();
+    const teams = await this._teamService.list();
     const results: Promise<ITeamScore>[] = [];
 
     for (let i = 0; i < teams.length; i += 1) {
