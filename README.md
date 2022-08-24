@@ -72,7 +72,7 @@ Tivemos que desenvolver uma API RESTful para uma aplicação front-end que já e
 <details>
   <summary markdown="span"><strong>:us: English</strong></summary><br />
 
-To run this application you need to have **Git**, **Docker** and **Docker Compose** installed on your machine. Docker Compose needs to be at **1.29** version or superior.
+To run this application you need to have **Git**, **Docker**, **Node** and **Docker Compose** installed on your machine. Docker Compose needs to be at **1.29** version or superior and Node needs to be at **16** version or superior.
 
 ### 1 - Clone the repository and enter the project's folder
 
@@ -108,7 +108,7 @@ http://localhost:3000
 <details>
   <summary markdown="span"><strong>:brazil: Português</strong></summary><br />
 
-Para rodar está aplicação é necessário ter **Git**, **Docker** e o **Docker Compose** instalados no seu computador. O Docker Compose precisa estar na versão **1.29** ou superior.
+Para rodar está aplicação é necessário ter **Git**, **Docker**, **Node** e o **Docker Compose** instalados no seu computador. O Docker Compose precisa estar na versão **1.29** ou superior e o Node na versão **16** ou superior.
 
 ### 1 - Clone o repositório e entre na pasta do projeto
 
