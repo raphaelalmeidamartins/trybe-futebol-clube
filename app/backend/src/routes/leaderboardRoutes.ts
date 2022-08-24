@@ -4,8 +4,8 @@ import { matchController } from '../msc';
 
 const leaderboardRoutes = Router();
 
-leaderboardRoutes.get('/', matchController.getLeaderBoardGeneral);
-leaderboardRoutes.get('/home', matchController.getLeaderBoardHome);
-leaderboardRoutes.get('/away', matchController.getLeaderBoardAway);
+leaderboardRoutes.get('/', matchController.getLeaderboardGeneral);
+leaderboardRoutes.get('/home', matchController.getLeaderboardHome);
+leaderboardRoutes.get('/away', matchController.getLeaderboardAway);
 
 export default leaderboardRoutes;

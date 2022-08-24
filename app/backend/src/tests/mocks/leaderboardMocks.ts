@@ -1,6 +1,6 @@
-import ILeaderBoard from '../../services/utils/types/LeaderboardTypes';
+import ILeaderboard from '../../services/utils/types/LeaderboardTypes';
 
-export const mockLeaderboardGeneral: ILeaderBoard = [
+export const mockLeaderboardGeneral: ILeaderboard = [
   {
     name: "Palmeiras",
     totalPoints: 13,
@@ -195,7 +195,7 @@ export const mockLeaderboardGeneral: ILeaderBoard = [
   }
 ];
 
-export const mockLeaderboardHome: ILeaderBoard = [
+export const mockLeaderboardHome: ILeaderboard = [
   {
     name: "Santos",
     totalPoints: 9,
@@ -390,7 +390,7 @@ export const mockLeaderboardHome: ILeaderBoard = [
   }
 ];
 
-export const mockLeaderboardAway: ILeaderBoard = [
+export const mockLeaderboardAway: ILeaderboard = [
   {
     name: "Palmeiras",
     totalPoints: 6,

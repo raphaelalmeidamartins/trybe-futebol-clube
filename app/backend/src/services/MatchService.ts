@@ -29,7 +29,6 @@ const INCLUDE_OPTIONS = {
 
 class MatchService implements IMatchService {
   private _model = Match;
-  private _teamModel = Team;
 
   constructor(private _tokenService: IAuthService) {}
 
@@ -83,8 +82,8 @@ class MatchService implements IMatchService {
   }
 
   public async register(
-    authorization: string | undefined,
     data: IMatchCreation,
+    authorization: string | undefined,
   ): Promise<IMatch> {
     await this._tokenService.validate(authorization);
     this.validate.body.register(data);

@@ -1,8 +1,8 @@
 import Team, { ITeam } from '../database/models/Team';
 import NotFoundError from '../utils/errors/NotFoundError';
-import IService from './utils/types/ServiceTypes';
+import { ITeamService } from './utils/types/ServiceTypes';
 
-class TeamService implements IService<ITeam, number> {
+class TeamService implements ITeamService {
   private _model = Team;
 
   public async list(): Promise<ITeam[]> {

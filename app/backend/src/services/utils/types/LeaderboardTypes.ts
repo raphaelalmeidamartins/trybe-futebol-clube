@@ -11,7 +11,7 @@ interface ITeamScore {
   efficiency: string;
 }
 
-type ILeaderBoard = ITeamScore[];
+type ILeaderboard = ITeamScore[];
 
-export default ILeaderBoard;
+export default ILeaderboard;
 export { ITeamScore };

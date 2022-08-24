@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import UserService from '../services/UserService';
+import { IUserController } from './utils/types/ControllerTypes';
 
-class UserController implements UserController {
+class UserController implements IUserController {
   constructor(private _service: UserService) {
     this.login = this.login.bind(this);
     this.getRole = this.getRole.bind(this);
