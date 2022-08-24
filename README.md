@@ -146,7 +146,7 @@ http://localhost:3000
 <details>
   <summary markdown="span"><strong>:us: English</strong></summary><br />
 
-Run the following command in the root directory of the project to check tests coverage:
+Run the following command in the root directory of the project to check the tests coverage:
 
 ```sh
 cd ./app/backend/ && npm install && npm run test:coverage
