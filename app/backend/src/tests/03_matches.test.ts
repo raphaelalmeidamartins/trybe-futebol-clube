@@ -9,8 +9,8 @@ import { app } from '../app';
 import Match, { IMatchReturned } from '../database/models/Match';
 import Team from '../database/models/Team';
 import User, { IUser } from '../database/models/User';
-import { validLoginMock } from './mocks/loginUserMocks';
-import { matchesMock, matchMock, mockCreationBody, mockCreationBodyInvalidAway, mockCreationBodyInvalidBoth, mockCreationBodyInvalidHome, mockCreationReturn, mockUpdateBody } from './mocks/matchesMocks';
+import { userMock, validLoginMock } from './mocks/loginUserMocks';
+import { matchesEmpty, matchesMock, matchMock, mockCreationBody, mockCreationBodyInvalidAway, mockCreationBodyInvalidBoth, mockCreationBodyInvalidHome, mockCreationReturn, mockUpdateBody } from './mocks/matchesMocks';
 import { teamMock } from './mocks/teamsMocks';
 
 chai.use(chaiHttp);
@@ -31,16 +31,6 @@ const INCLUDE_OPTIONS = {
     },
   ],
 };
-
-const userMock: IUser = {
-  id: 1,
-  email: 'rapha@admin.com',
-  password: bcrypt.hashSync('raphapassword', 12),
-  username: 'rapha',
-  role: 'admin'
-}
-
-const matchesEmpty: IMatchReturned[] = [];
 
 describe('Check /matches routes', () => {
   describe('GET', () => {
