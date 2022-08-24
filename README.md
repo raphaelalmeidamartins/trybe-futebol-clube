@@ -27,7 +27,7 @@ Tivemos que desenvolver uma API RESTful para uma aplicação front-end que já e
 <details>
   <summary markdown="span"><strong>:us: English</strong></summary><br />
 
-* Create classes, abstract classes and methods
+* Create classes
 * Define types and interfaces
 * Use OOP concepts such as Abstraction, Encapsulation, Inheritance, Composition and Polymorfism
 * Use SOLID principles, such as Single Responsability, Open/Closed, Dependency Inversion, Substitution (Liskov) and Interface Segregation
@@ -41,7 +41,7 @@ Tivemos que desenvolver uma API RESTful para uma aplicação front-end que já e
 <details>
   <summary markdown="span"><strong>:brazil: Português</strong></summary><br />
 
-* Criar classes e classes e métodos abstratas
+* Criar classes
 * Definir types e interfaces
 * Utilizar conceitos de POO como: Abstração, Encapsulamento, Herança, Composição e Polimorfismo
 * Utilizar princípios de SOLID como: Responsabilidade Única, Aberto/Fechado, Inversão de dependência, Substituição de Liskov e Segragação de Interfaces
