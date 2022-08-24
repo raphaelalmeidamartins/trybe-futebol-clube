@@ -86,9 +86,9 @@ git clone git@github.com:raphaelalmeidamartins/trybe-futebol-clube.git && cd try
 npm run compose:up
 ```
 
-### 3 - Access the front-end application
+### 3 - Access the front-end application running on the 3000 port
 
-![http://localhost:3000](http://localhost:3000)
+http://localhost:3000
 
 ### 4 - Use one of the following credentials to login and test the app
 
@@ -124,7 +124,7 @@ npm run compose:up
 
 ### 3 - Acesse a aplicação front-end na port 3000
 
-![http://localhost:3000](http://localhost:3000)
+http://localhost:3000
 
 ### 4 - Utilize uma das credenciais abaixo para logar na aplicação e testar
 
