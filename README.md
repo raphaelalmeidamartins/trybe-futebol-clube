@@ -74,10 +74,10 @@ Tivemos que desenvolver uma API RESTful para uma aplicação front-end que já e
 
 To run this application you need to have **Git**, **Docker** and **Docker Compose** installed on your machine. Docker Compose needs to be at **1.29** version or superior.
 
-### 1 - Clone the repository
+### 1 - Clone the repository and enter the project's folder
 
 ```sh
-git clone git@github.com:raphaelalmeidamartins/trybesmith.git
+git clone git@github.com:raphaelalmeidamartins/trybe-futebol-clube.git && cd trybe-futebol-clube
 ```
 
 ### 2 - Run the containers with the following script
@@ -110,10 +110,10 @@ npm run compose:up
 
 Para rodar está aplicação é necessário ter **Git**, **Docker** e o **Docker Compose** instalados no seu computador. O Docker Compose precisa estar na versão **1.29** ou superior.
 
-### 1 - Clone o repositório
+### 1 - Clone o repositório e entre na pasta do projeto
 
 ```sh
-git clone git@github.com:raphaelalmeidamartins/trybesmith.git
+git clone git@github.com:raphaelalmeidamartins/trybe-futebol-clube.git && cd trybe-futebol-clube
 ```
 
 ### 2 - Execute os containers
